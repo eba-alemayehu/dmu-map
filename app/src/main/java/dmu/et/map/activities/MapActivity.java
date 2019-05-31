@@ -1,10 +1,18 @@
-package dmu.et.map;
+package dmu.et.map.activities;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.provider.Telephony;
+import android.telephony.TelephonyManager;
+import android.util.Patterns;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
@@ -14,19 +22,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import dmu.et.map.R;
+import dmu.et.map.http.Http;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
-public class navigation extends AppCompatActivity
+import java.util.HashMap;
+import java.util.regex.Pattern;
+
+public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        register();
+//        getSupportActionBar().hide();
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -37,16 +53,43 @@ public class navigation extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ((ImageButton) findViewById(R.id.nav)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    public void register() {
+        TelephonyManager device = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+            }
+            params.put("device_id", device.getDeviceId());
+            params.put("phone", device.getLine1Number());
+            String email = null;
+            Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
+            Account[] accounts = AccountManager.get(this).getAccounts();
+            for (Account account : accounts) {
+                if (gmailPattern.matcher(account.name).matches()) {
+                    email = account.name;
+                }
+            }
+            params.put("email", email);
+
+        }catch(Exception e){
+
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -82,7 +125,7 @@ public class navigation extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle MapActivity view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
