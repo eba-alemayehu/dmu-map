@@ -15,10 +15,14 @@ import androidx.annotation.RequiresApi;
 import dmu.et.map.views.MapView;
 
 public class GeoMap {
-    public static final float GRID_ORIGEN_Y = 10.327004f;
-    public static final float GRID_ORIGEN_X = 37.739847f;
-    public static final float GRID_X = 37.839847f;
-    public static final float GRID_Y = 10.427004f;
+//    public static final float GRID_ORIGEN_X = 10.327004f;
+//    public static final float GRID_ORIGEN_Y = 37.739847f;
+//    public static final float GRID_Y = 37.839847f;
+//    public static final float GRID_X = 10.427004f;
+    public static final float GRID_ORIGEN_X = 10.32723f;
+    public static final float GRID_ORIGEN_Y = 37.73941f;
+    public static final float GRID_Y = 37.75054f;
+    public static final float GRID_X = 10.33343f;
     public static final float GRID_DISTANCE_X = GRID_X - GRID_ORIGEN_X;
     public static final float GRID_DISTANCE_Y = GRID_Y - GRID_ORIGEN_Y;
 

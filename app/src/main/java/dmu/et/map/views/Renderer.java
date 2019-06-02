@@ -53,9 +53,15 @@ public class Renderer {
 
     public void renderText(Canvas canvas,Location loc, int x, int y){
         Paint p = new Paint();
-        p.setTextSize(42);
-        p.setColor(Color.RED);
+        p.setTextSize(28);
+        p.setColor(Color.parseColor("#182B4A"));
         canvas.drawText(loc.getName(), x, y, p);
+//        Paint stkPaint = new Paint();
+//        stkPaint.setStyle(Paint.Style.STROKE);
+//        stkPaint.setStrokeWidth(1);
+//        stkPaint.setColor(Color.WHITE);
+//        stkPaint.setTextSize(28);
+//        canvas.drawText(loc.getName(), x, y, stkPaint);
     }
 
     public void renderText(Canvas canvas,Location loc, Pair<Integer, Integer> cordinate){
@@ -70,9 +76,9 @@ public class Renderer {
                 (float)deviceLocation.getLongitude(),
                 this.display
         );
-        final int RAD = 18;
+        final int RAD = 10;
         Paint p = new Paint();
-        p.setColor(Color.BLUE);
+        p.setColor(Color.parseColor("#2f8eff"));
         canvas.drawCircle(cordinate.first,cordinate.second,RAD, p);
         p.setARGB(75, 100, 120, 255);
         canvas.drawCircle(cordinate.first,cordinate.second,RAD+(deviceLocation.getAccuracy()*this.view.getScale()), p);

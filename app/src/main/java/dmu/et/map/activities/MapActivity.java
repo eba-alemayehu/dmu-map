@@ -3,6 +3,9 @@ package dmu.et.map.activities;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import dmu.et.map.R;
 import dmu.et.map.http.Http;
+import dmu.et.map.service.SyncService;
+import dmu.et.map.tasks.RegisterTask;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,19 +45,22 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-        register();
+        SharedPreferences sharedPreferences = this.getSharedPreferences("registeration", Context.MODE_PRIVATE);
+        if(sharedPreferences.getInt("id", -1) == -1)
+            register();
+        startService(new Intent(this, SyncService.class));
 //        getSupportActionBar().hide();
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ((ImageButton) findViewById(R.id.nav)).setOnClickListener(new View.OnClickListener() {
@@ -71,11 +80,17 @@ public class MapActivity extends AppCompatActivity
             HashMap<String, Object> params = new HashMap<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.READ_CONTACTS)) {
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_CONTACTS},
+                                12);
+                    }
                 }
             }
             params.put("device_id", device.getDeviceId());
-            params.put("phone", device.getLine1Number());
+            params.put("phone_num", device.getLine1Number());
             String email = null;
             Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
             Account[] accounts = AccountManager.get(this).getAccounts();
@@ -85,9 +100,9 @@ public class MapActivity extends AppCompatActivity
                 }
             }
             params.put("email", email);
-
+            new RegisterTask(this).execute(params);
         }catch(Exception e){
-
+            e.printStackTrace();
         }
     }
     @Override
@@ -135,10 +150,6 @@ public class MapActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 

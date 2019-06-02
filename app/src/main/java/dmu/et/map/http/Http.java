@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Http {
-    private static final String ROOT_URL = "http://test";
+    private static final String ROOT_URL = "http://192.168.43.55";
 
     public static JSONArray getArray(String url, HashMap<String, Object> params) throws IOException, URISyntaxException, JSONException {
         return new JSONArray(getString(get(url, params)));
@@ -65,7 +65,7 @@ public class Http {
     public static URI uri(String url, HashMap<String, Object> params) throws IOException, URISyntaxException {
         URIBuilder builder = new URIBuilder(ROOT_URL + url);
         for (Map.Entry<String, Object> param : params.entrySet()) {
-            builder.setParameter(param.getKey(), param.getValue().toString());
+            builder.setParameter(param.getKey(), (param.getValue()!=null)?param.getValue().toString():"null");
         }
         return builder.build();
     }

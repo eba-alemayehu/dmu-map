@@ -10,11 +10,11 @@ import java.util.Arrays;
 import dmu.et.map.util.database.DatabaseElequent;
 
 public class Location extends DatabaseElequent {
-    private static final String LATITUDE="latitude";
-    private static final String LONGTUDE="longtude";
-    private static final String NAME = "name";
-    private static final String ICON = "icon";
-    private static final String LEVEL = "level";
+    public static final String LATITUDE="latitude";
+    public static final String LONGTUDE="longtude";
+    public static final String NAME = "name";
+    public static final String ICON = "icon";
+    public static final String LEVEL = "level";
 
     private float latitude;
     private float longtude;

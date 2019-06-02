@@ -28,7 +28,7 @@ public class RegisterTask extends AsyncTask<HashMap<String, Object>,Void, JSONOb
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -40,6 +40,8 @@ public class RegisterTask extends AsyncTask<HashMap<String, Object>,Void, JSONOb
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
@@ -57,6 +58,7 @@ public class MapViewListener implements
         Location loc = this.view.getGeoMap().getLocationInstance(
                 (GeoMap.GRID_DISTANCE_X*x)+GeoMap.GRID_ORIGEN_X,
                 (GeoMap.GRID_DISTANCE_Y*y)+GeoMap.GRID_ORIGEN_Y);
+        Toast.makeText(this.view.getContext(), loc.getLatitude()+","+loc.getLongitude(), Toast.LENGTH_LONG).show(); 
         this.view.getGeoMap().setPinPoint(loc);
     }
 }
